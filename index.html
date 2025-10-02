@@ -1,91 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SURVEY_PROGRAM.EXE</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #000000;
-      color: white;
-      font-family: "utfont";
-      font-size: 30px;
-      text-shadow: 1px 1px 0 #000;
-      height: 100vh;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<title>SURVEY_PROGRAM.EXE</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    color: white;
+    font-family: "utfont", monospace;
+    font-size: 30px;
+    text-shadow: 1px 1px 0 #000;
+    height: 100vh;
+    overflow: hidden;
+  }
 
-    /* Background video */
-    #bg-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -1; /* keep it behind survey */
-    }
+  /* Intro text */
+  #intro {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-family: "utfont", monospace;
+    font-size: 32px;
+    white-space: pre-line;
+  }
 
-    /* Survey box */
-    #survey-box {
-      border: 4px solid white;
-      padding: 20px;
-      width: 600px;
-      font-family: "utfont";
-      font-size: 30px;
-      margin: auto;
-      margin-top: 100px;
-      background-color: rgba(0, 0, 0, 0.8);
-      min-height: 200px;
-    }
+  /* Background video */
+  #bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    display: none;
+  }
 
-    input[type="text"], select {
-      width: 100%;
-      font-family: "utfont";
-      font-size: 30px;
-      padding: 8px;
-      margin-top: 10px;
-      background-color: #000022;
-      color: white;
-      border: 2px solid white;
-    }
+  /* Survey box */
+  #survey-box {
+    border: 4px solid white;
+    padding: 20px;
+    width: 600px;
+    font-family: "utfont", monospace;
+    font-size: 30px;
+    margin: auto;
+    margin-top: 80px;
+    background-color: rgba(0,0,0,0.8);
+    min-height: 200px;
+    display: none;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+  }
 
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-family: "utfont";
-      font-size: 30px;
-      background-color: #000055;
-      color: white;
-      border: 2px solid white;
-      cursor: pointer;
-    }
+  #survey-box.show {
+    display: block;
+    opacity: 1;
+  }
 
-    button:hover {
-      background-color: #000077;
-    }
+  input[type="text"], select {
+    width: 100%;
+    font-family: "utfont", monospace;
+    font-size: 30px;
+    padding: 8px;
+    margin-top: 10px;
+    background-color: #000022;
+    color: white;
+    border: 2px solid white;
+  }
 
-    .center {
-      text-align: center;
-    }
-  </style>
+  button.confirm {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-family: "utfont", monospace;
+    font-size: 30px;
+    background: none;
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+  }
+
+  button.confirm:hover {
+    color: yellow;
+    border-color: yellow;
+  }
+
+  .center {
+    text-align: center;
+  }
+</style>
 </head>
 <body>
 
+  <!-- Intro text -->
+  <div id="intro"></div>
+
   <!-- Background video -->
-  <video autoplay loop id="bg-video">
+  <video id="bg-video" loop>
     <source src="background.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
   <!-- Survey box -->
-  <div id="survey-box">
-    <!-- Questions will appear here -->
-  </div>
+  <div id="survey-box"></div>
 
-  <!-- Hidden form to submit to Formspree -->
+  <!-- Hidden form -->
   <form id="survey-form" action="https://formspree.io/f/mgvnylya" method="POST" style="display: none;">
     <input type="hidden" name="name" id="form-name">
     <input type="hidden" name="discord" id="form-discord">
@@ -98,132 +120,122 @@
     <input type="hidden" name="_redirect" value="thankyou.html">
   </form>
 
-  <script>
-    const questions = [
-      {
-        id: 'name',
-        text: 'WHAT IS YOUR NAME?',
-        type: 'text',
-        placeholder: 'ENTER NAME'
-      },
-      {
-        id: 'discord',
-        text: 'DO YOU HAVE DISCORD? IF SO, WHAT IS YOUR USERNAME?',
-        type: 'text',
-        placeholder: 'ENTER USERNAME'
-      },
-      {
-        id: 'favorite_color',
-        text: 'WHAT IS YOUR FAVORITE COLOR?',
-        type: 'text',
-        placeholder: 'E.G. GREEN'
-      },
-      {
-        id: 'favourite_shows',
-        text: 'WHAT ARE YOUR FAVOURITE SHOWS?',
-        type: 'text',
-        placeholder: 'E.G. MURDER DRONES'
-      },
-      {
-        id: 'favorite_food',
-        text: 'WHAT IS YOUR FAVORITE FOOD?',
-        type: 'text',
-        placeholder: 'E.G. PIZZA'
-      },
-      {
-        id: 'favorite_games',
-        text: 'WHAT ARE YOUR FAVORITE GAMES?',
-        type: 'text',
-        placeholder: 'E.G. DELTARUNE'
-      },
-      {
-        id: 'favourite_animals',
-        text: 'WHAT ARE YOUR FAVORITE ANIMALS?',
-        type: 'text',
-        placeholder: 'E.G. PENGUIN'
-      },
-      {
-        id: 'other',
-        text: 'IS THERE ANYTHING ELSE?',
-        type: 'text',
-        placeholder: 'ENTER ANYTHING ELSE'
-      },
-    ];
+<script>
+const introLines = [
+  "SURVEY_PROGRAM.EXE",
+  "ARE WE… CONNECTED?"
+];
 
-    const answers = {};
-    let current = 0;
+const introAudio = new Audio("audio.mp3");
 
-    function showQuestion(index) {
-      const q = questions[index];
-      const box = document.getElementById('survey-box');
-      let html = `<p>${q.text}</p>`;
+const questions = [
+  { id: 'name', text: 'WHAT IS YOUR NAME?', type: 'text', placeholder: 'ENTER NAME' },
+  { id: 'discord', text: 'DO YOU HAVE DISCORD? IF SO, WHAT IS YOUR USERNAME?', type: 'text', placeholder: 'ENTER USERNAME' },
+  { id: 'favorite_color', text: 'WHAT IS YOUR FAVORITE COLOR?', type: 'text', placeholder: 'E.G. GREEN' },
+  { id: 'favourite_shows', text: 'WHAT ARE YOUR FAVOURITE SHOWS?', type: 'text', placeholder: 'E.G. MURDER DRONES' },
+  { id: 'favorite_food', text: 'WHAT IS YOUR FAVORITE FOOD?', type: 'text', placeholder: 'E.G. PIZZA' },
+  { id: 'favorite_games', text: 'WHAT ARE YOUR FAVORITE GAMES?', type: 'text', placeholder: 'E.G. DELTARUNE' },
+  { id: 'favourite_animals', text: 'WHAT ARE YOUR FAVORITE ANIMALS?', type: 'text', placeholder: 'E.G. PENGUIN' },
+  { id: 'other', text: 'IS THERE ANYTHING ELSE?', type: 'text', placeholder: 'ENTER ANYTHING ELSE' },
+];
 
-      if (q.type === 'text') {
-        html += `<input type="text" id="answer-input" placeholder="${q.placeholder}" autofocus><br>`;
-      } else if (q.type === 'select') {
-        html += `<select id="answer-input">`;
-        q.options.forEach(opt => {
-          html += `<option value="${opt}">${opt}</option>`;
-        });
-        html += `</select><br>`;
-      }
+let answers = {};
+let current = 0;
 
-      html += `<div class="center"><button onclick="next()">CONFIRM</button></div>`;
-      box.innerHTML = html;
-
-      setTimeout(() => {
-        document.getElementById('answer-input').focus();
-      }, 50);
+function typeText(element, text, speed = 50, callback) {
+  let i = 0;
+  element.innerHTML = "";
+  function typeChar() {
+    if (i < text.length) {
+      element.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typeChar, speed);
+    } else if (callback) {
+      callback();
     }
+  }
+  typeChar();
+}
 
-    function next() {
-      const q = questions[current];
-      const value = document.getElementById('answer-input').value.trim();
-      answers[q.id] = value;
+// Run intro sequence
+function runIntro(index = 0) {
+  if (index >= introLines.length) {
+    startSurvey();
+    return;
+  }
+  const introDiv = document.getElementById("intro");
+  typeText(introDiv, introLines[index], 60, () => {
+    setTimeout(() => runIntro(index + 1), 500); // pause between lines
+  });
+}
 
-      current++;
-      if (current < questions.length) {
-        showQuestion(current);
-      } else {
-        submitForm();
-      }
+function startSurvey() {
+  document.getElementById("intro").style.display = "none";
+
+  const video = document.getElementById("bg-video");
+  video.style.display = "block";
+  video.play();
+
+  const surveyBox = document.getElementById("survey-box");
+  surveyBox.style.display = "block";
+  setTimeout(() => {
+    surveyBox.classList.add("show");
+    showQuestion(current);
+  }, 50);
+}
+
+function showQuestion(index) {
+  const q = questions[index];
+  const box = document.getElementById("survey-box");
+
+  typeText(box, q.text, 40, () => {
+    let inputHtml = "";
+    if (q.type === "text") {
+      inputHtml = `<input type="text" id="answer-input" placeholder="${q.placeholder}" autofocus><br>`;
+    } else if (q.type === "select") {
+      inputHtml = `<select id="answer-input">` + q.options.map(opt => `<option value="${opt}">${opt}</option>`).join("") + `</select><br>`;
     }
+    inputHtml += `<div class="center"><button class="confirm" onclick="next()">CONFIRM</button></div>`;
+    box.innerHTML += "<br>" + inputHtml;
+    setTimeout(() => document.getElementById("answer-input").focus(), 50);
+  });
+}
 
-    function submitForm() {
-      document.getElementById('form-name').value = answers['name'];
-      document.getElementById('form-discord').value = answers['discord'];
-      document.getElementById('form-color').value = answers['favorite_color'];
-      document.getElementById('form-shows').value = answers['favourite_shows'];
-      document.getElementById('form-food').value = answers['favorite_food'];
-      document.getElementById('form-games').value = answers['favorite_games'];
-      document.getElementById('form-animal').value = answers['favourite_animals'];
-      document.getElementById('form-other').value = answers['other'];
+function next() {
+  const q = questions[current];
+  const value = document.getElementById("answer-input").value.trim();
+  answers[q.id] = value;
 
-      document.getElementById('survey-box').innerHTML = `
-        <p class="center">THANK YOU<br>FOR YOUR TIME.</p>
-        <p class="center">SUBMITTING RESPONSES...</p>
-      `;
+  current++;
+  if (current < questions.length) {
+    showQuestion(current);
+  } else {
+    submitForm();
+  }
+}
 
-      document.getElementById('survey-form').submit();
-    }
+function submitForm() {
+  document.getElementById('form-name').value = answers['name'];
+  document.getElementById('form-discord').value = answers['discord'];
+  document.getElementById('form-color').value = answers['favorite_color'];
+  document.getElementById('form-shows').value = answers['favourite_shows'];
+  document.getElementById('form-food').value = answers['favorite_food'];
+  document.getElementById('form-games').value = answers['favorite_games'];
+  document.getElementById('form-animal').value = answers['favourite_animals'];
+  document.getElementById('form-other').value = answers['other'];
 
-    window.onload = () => {
-      showQuestion(0);
+  const box = document.getElementById("survey-box");
+  typeText(box, "THANK YOU\nFOR YOUR TIME.\nSUBMITTING RESPONSES...", 40, () => {
+    document.getElementById("survey-form").submit();
+  });
+}
 
-      // Try to play video with audio
-      const video = document.getElementById("bg-video");
-      video.muted = false;
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // If autoplay with sound is blocked, wait for a click
-          document.body.addEventListener("click", () => {
-            video.play();
-          }, { once: true });
-        });
-      }
-    };
-  </script>
+// Start everything
+window.onload = () => {
+  introAudio.play();
+  runIntro();
+};
+</script>
 
 </body>
 </html>
