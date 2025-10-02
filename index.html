@@ -65,8 +65,13 @@
   <!-- Hidden form to submit to Formspree -->
   <form id="survey-form" action="https://formspree.io/f/mgvnylya" method="POST" style="display: none;">
     <input type="hidden" name="name" id="form-name">
+    <input type="hidden" name="discord" id="form-discord">
     <input type="hidden" name="favorite_color" id="form-color">
-    <input type="hidden" name="blood_type" id="form-blood">
+    <input type="hidden" name="favourite_shows" id="form-shows">
+    <input type="hidden" name="favourite_food" id="form-food">
+    <input type="hidden" name="favourite_games" id="form-games">
+    <input type="hidden" name="favourite_animals" id="form-animal">
+    <input type="hidden" name="other" id="form-other">
     <input type="hidden" name="_redirect" value="thankyou.html">
   </form>
 
@@ -79,17 +84,47 @@
         placeholder: 'ENTER NAME'
       },
       {
+        id: 'discord',
+        text: 'DO YOU HAVE DISCORD? IF SO, WHAT IS YOUR USERNAME?',
+        type: 'text',
+        placeholder: 'ENTER USERNAME'
+      },
+      {
         id: 'favorite_color',
         text: 'WHAT IS YOUR FAVORITE COLOR?',
         type: 'text',
-        placeholder: 'E.G. BLUE'
+        placeholder: 'E.G. GREEN'
       },
       {
-        id: 'blood_type',
-        text: 'WHAT IS YOUR BLOOD TYPE?',
-        type: 'select',
-        options: ['A', 'B', 'AB', 'O']
-      }
+        id: 'favourite_shows',
+        text: 'WHAT ARE YOUR FAVOURITE SHOWS?',
+        type: 'text',
+        placeholder: 'E.G. MURDER DRONES'
+      },
+      {
+        id: 'favorite_food',
+        text: 'WHAT IS YOUR FAVORITE FOOD?',
+        type: 'text',
+        placeholder: 'E.G. PIZZA'
+      },
+      {
+        id: 'favorite_games',
+        text: 'WHAT ARE YOUR FAVORITE GAMES?',
+        type: 'text',
+        placeholder: 'E.G. DELTARUNE'
+      },
+      {
+        id: 'favourite_animals',
+        text: 'WHAT ARE YOUR FAVORITE ANIMALS?',
+        type: 'text',
+        placeholder: 'E.G. PENGUIN'
+      },
+      {
+        id: 'other',
+        text: 'IS THERE ANYTHING ELSE?',
+        type: 'text',
+        placeholder: 'ENTER ANYTHING ELSE'
+      },
     ];
 
     const answers = {};
@@ -131,26 +166,25 @@
       }
     }
 
-    function submitForm() {
-      // Populate hidden form fields
-      document.getElementById('form-name').value = answers['name'];
-      document.getElementById('form-color').value = answers['favorite_color'];
-      document.getElementById('form-blood').value = answers['blood_type'];
+function submitForm() {
+  document.getElementById('form-name').value = answers['name'];
+  document.getElementById('form-discord').value = answers['discord'];
+  document.getElementById('form-color').value = answers['favorite_color'];
+  document.getElementById('form-shows').value = answers['favourite_shows'];
+  document.getElementById('form-food').value = answers['favorite_food'];
+  document.getElementById('form-games').value = answers['favorite_games'];
+  document.getElementById('form-animal').value = answers['favourite_animals'];
+  document.getElementById('form-other').value = answers['other'];
 
-      // Show submission message
-      document.getElementById('survey-box').innerHTML = `
-        <p class="center">THANK YOU<br>FOR YOUR TIME.</p>
-        <p class="center">SUBMITTING RESPONSES...</p>
-      `;
+  document.getElementById('survey-box').innerHTML = `
+    <p class="center">THANK YOU<br>FOR YOUR TIME.</p>
+    <p class="center">SUBMITTING RESPONSES...</p>
+  `;
 
-      // Submit form
-      document.getElementById('survey-form').submit();
-    }
+  document.getElementById('survey-form').submit(); } 
+  
+  window.onload = () => { showQuestion(0); }; </script>
 
-    window.onload = () => {
-      showQuestion(0);
-    };
-  </script>
 
 </body>
 </html>
