@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <title>SURVEY_PROGRAM.EXE</title>
+  <link rel="stylesheet" href="style.css">
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: black;
+      background-color: #000000;
       color: white;
-      font-family: "utfont", monospace;
+      font-family: "utfont";
       font-size: 30px;
       text-shadow: 1px 1px 0 #000;
+      height: 100vh;
       overflow: hidden;
     }
 
@@ -20,35 +22,10 @@
       position: fixed;
       top: 0;
       left: 0;
-      min-width: 100%;
-      min-height: 100%;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      z-index: -1;
-      display: none; /* hidden until start */
-    }
-
-    /* Start screen */
-    #start-screen {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-    }
-
-    #start-button {
-      font-family: "utfont", monospace;
-      font-size: 32px;
-      color: white;
-      background: none;
-      border: 2px solid white;
-      padding: 10px 20px;
-      cursor: pointer;
-    }
-
-    #start-button:hover {
-      color: yellow;
-      border-color: yellow;
+      z-index: -1; /* keep it behind survey */
     }
 
     /* Survey box */
@@ -56,23 +33,17 @@
       border: 4px solid white;
       padding: 20px;
       width: 600px;
+      font-family: "utfont";
+      font-size: 30px;
       margin: auto;
-      margin-top: 80px;
-      background-color: black;
+      margin-top: 100px;
+      background-color: rgba(0, 0, 0, 0.8);
       min-height: 200px;
-      opacity: 0;           /* start hidden */
-      display: none;        /* hidden until start */
-      transition: opacity 1.5s ease; /* fade-in effect */
-    }
-
-    #survey-box.show {
-      display: block;
-      opacity: 1;           /* fade in */
     }
 
     input[type="text"], select {
       width: 100%;
-      font-family: "utfont", monospace;
+      font-family: "utfont";
       font-size: 30px;
       padding: 8px;
       margin-top: 10px;
@@ -81,20 +52,19 @@
       border: 2px solid white;
     }
 
-    button.confirm {
+    button {
       margin-top: 20px;
       padding: 10px 20px;
-      font-family: "utfont", monospace;
+      font-family: "utfont";
       font-size: 30px;
-      background: none;
+      background-color: #000055;
       color: white;
       border: 2px solid white;
       cursor: pointer;
     }
 
-    button.confirm:hover {
-      color: yellow;
-      border-color: yellow;
+    button:hover {
+      background-color: #000077;
     }
 
     .center {
@@ -105,19 +75,17 @@
 <body>
 
   <!-- Background video -->
-  <video id="bg-video" loop>
+  <video autoplay loop id="bg-video">
     <source src="background.mp4" type="video/mp4">
+    Your browser does not support the video tag.
   </video>
 
-  <!-- Start screen -->
-  <div id="start-screen">
-    <button id="start-button">▶ START SURVEY</button>
+  <!-- Survey box -->
+  <div id="survey-box">
+    <!-- Questions will appear here -->
   </div>
 
-  <!-- Survey box -->
-  <div id="survey-box"></div>
-
-  <!-- Hidden form -->
+  <!-- Hidden form to submit to Formspree -->
   <form id="survey-form" action="https://formspree.io/f/mgvnylya" method="POST" style="display: none;">
     <input type="hidden" name="name" id="form-name">
     <input type="hidden" name="discord" id="form-discord">
@@ -132,14 +100,54 @@
 
   <script>
     const questions = [
-      { id: 'name', text: 'WHAT IS YOUR NAME?', type: 'text', placeholder: 'ENTER NAME' },
-      { id: 'discord', text: 'DO YOU HAVE DISCORD? IF SO, WHAT IS YOUR USERNAME?', type: 'text', placeholder: 'ENTER USERNAME' },
-      { id: 'favorite_color', text: 'WHAT IS YOUR FAVORITE COLOR?', type: 'text', placeholder: 'E.G. GREEN' },
-      { id: 'favourite_shows', text: 'WHAT ARE YOUR FAVOURITE SHOWS?', type: 'text', placeholder: 'E.G. MURDER DRONES' },
-      { id: 'favorite_food', text: 'WHAT IS YOUR FAVORITE FOOD?', type: 'text', placeholder: 'E.G. PIZZA' },
-      { id: 'favorite_games', text: 'WHAT ARE YOUR FAVORITE GAMES?', type: 'text', placeholder: 'E.G. DELTARUNE' },
-      { id: 'favourite_animals', text: 'WHAT ARE YOUR FAVORITE ANIMALS?', type: 'text', placeholder: 'E.G. PENGUIN' },
-      { id: 'other', text: 'IS THERE ANYTHING ELSE?', type: 'text', placeholder: 'ENTER ANYTHING ELSE' },
+      {
+        id: 'name',
+        text: 'WHAT IS YOUR NAME?',
+        type: 'text',
+        placeholder: 'ENTER NAME'
+      },
+      {
+        id: 'discord',
+        text: 'DO YOU HAVE DISCORD? IF SO, WHAT IS YOUR USERNAME?',
+        type: 'text',
+        placeholder: 'ENTER USERNAME'
+      },
+      {
+        id: 'favorite_color',
+        text: 'WHAT IS YOUR FAVORITE COLOR?',
+        type: 'text',
+        placeholder: 'E.G. GREEN'
+      },
+      {
+        id: 'favourite_shows',
+        text: 'WHAT ARE YOUR FAVOURITE SHOWS?',
+        type: 'text',
+        placeholder: 'E.G. MURDER DRONES'
+      },
+      {
+        id: 'favorite_food',
+        text: 'WHAT IS YOUR FAVORITE FOOD?',
+        type: 'text',
+        placeholder: 'E.G. PIZZA'
+      },
+      {
+        id: 'favorite_games',
+        text: 'WHAT ARE YOUR FAVORITE GAMES?',
+        type: 'text',
+        placeholder: 'E.G. DELTARUNE'
+      },
+      {
+        id: 'favourite_animals',
+        text: 'WHAT ARE YOUR FAVORITE ANIMALS?',
+        type: 'text',
+        placeholder: 'E.G. PENGUIN'
+      },
+      {
+        id: 'other',
+        text: 'IS THERE ANYTHING ELSE?',
+        type: 'text',
+        placeholder: 'ENTER ANYTHING ELSE'
+      },
     ];
 
     const answers = {};
@@ -160,7 +168,7 @@
         html += `</select><br>`;
       }
 
-      html += `<div class="center"><button class="confirm" onclick="next()">CONFIRM</button></div>`;
+      html += `<div class="center"><button onclick="next()">CONFIRM</button></div>`;
       box.innerHTML = html;
 
       setTimeout(() => {
@@ -199,23 +207,23 @@
       document.getElementById('survey-form').submit();
     }
 
-    // Start button logic
-    document.getElementById("start-button").addEventListener("click", () => {
-      let video = document.getElementById("bg-video");
-      video.style.display = "block";
+    window.onload = () => {
+      showQuestion(0);
+
+      // Try to play video with audio
+      const video = document.getElementById("bg-video");
       video.muted = false;
-      video.play();
-
-      document.getElementById("start-screen").style.display = "none";
-      let surveyBox = document.getElementById("survey-box");
-      surveyBox.style.display = "block";
-
-      // trigger fade-in
-      setTimeout(() => {
-        surveyBox.classList.add("show");
-        showQuestion(0);
-      }, 50);
-    });
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // If autoplay with sound is blocked, wait for a click
+          document.body.addEventListener("click", () => {
+            video.play();
+          }, { once: true });
+        });
+      }
+    };
   </script>
+
 </body>
 </html>
