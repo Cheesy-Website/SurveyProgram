@@ -42,9 +42,6 @@
     height: 100%;
     object-fit: cover;
     z-index: -1;
-  }
-
-  #startup-video, #bg-video {
     display: none;
   }
 
@@ -134,6 +131,7 @@
   </form>
 
 <script>
+// Survey questions
 const questions = [
   { id: 'name', text: 'WHAT IS YOUR NAME?', type: 'text', placeholder: 'ENTER NAME' },
   { id: 'discord', text: 'DO YOU HAVE DISCORD? IF SO, WHAT IS YOUR USERNAME?', type: 'text', placeholder: 'ENTER USERNAME' },
@@ -148,12 +146,19 @@ const questions = [
 let answers = {};
 let current = 0;
 
+// Sounds
+const typeSound = new Audio("type.wav");
+const clickSound = new Audio("click.wav");
+
+// Typewriter effect
 function typeText(element, text, speed = 50, callback) {
   let i = 0;
   element.innerHTML = "";
   function typeChar() {
     if (i < text.length) {
       element.innerHTML += text.charAt(i);
+      typeSound.currentTime = 0;
+      typeSound.play();
       i++;
       setTimeout(typeChar, speed);
     } else if (callback) {
@@ -163,6 +168,7 @@ function typeText(element, text, speed = 50, callback) {
   typeChar();
 }
 
+// Show a survey question
 function showQuestion(index) {
   const q = questions[index];
   const box = document.getElementById("survey-box");
@@ -171,8 +177,6 @@ function showQuestion(index) {
     let inputHtml = "";
     if (q.type === "text") {
       inputHtml = `<input type="text" id="answer-input" placeholder="${q.placeholder}" autofocus><br>`;
-    } else if (q.type === "select") {
-      inputHtml = `<select id="answer-input">` + q.options.map(opt => `<option value="${opt}">${opt}</option>`).join("") + `</select><br>`;
     }
     inputHtml += `<div class="center"><button class="confirm" onclick="next()">CONFIRM</button></div>`;
     box.innerHTML += "<br>" + inputHtml;
@@ -180,6 +184,7 @@ function showQuestion(index) {
   });
 }
 
+// Next question
 function next() {
   const q = questions[current];
   const value = document.getElementById("answer-input").value.trim();
@@ -193,6 +198,7 @@ function next() {
   }
 }
 
+// Submit form
 function submitForm() {
   document.getElementById('form-name').value = answers['name'];
   document.getElementById('form-discord').value = answers['discord'];
@@ -211,13 +217,13 @@ function submitForm() {
 
 // START BUTTON CLICK
 document.getElementById("start-button").addEventListener("click", () => {
+  clickSound.play();
   document.getElementById("start-button").style.display = "none";
 
   const startup = document.getElementById("startup-video");
   startup.style.display = "block";
   startup.play();
 
-  // When startup video ends, show survey and background
   startup.addEventListener("ended", () => {
     const bg = document.getElementById("bg-video");
     bg.style.display = "block";
@@ -230,6 +236,13 @@ document.getElementById("start-button").addEventListener("click", () => {
       showQuestion(current);
     }, 50);
   });
+});
+
+// CONFIRM BUTTON CLICK SOUND
+document.addEventListener("click", (e) => {
+  if (e.target && e.target.classList.contains("confirm")) {
+    clickSound.play();
+  }
 });
 </script>
 </body>
