@@ -1,0 +1,7 @@
+@font-face {
+  font-family: "utfont";
+  src: url("https://cheesy-website.github.io/fonts/determinationsanswebregular-369x-webfont.woff") format("woff"),
+       url("https://cheesy-website.github.io/fonts/determinationsanswebregular-369x.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
