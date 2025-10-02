@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SURVEY_PROGRAM.EXE</title>
+  <style>
+    body {
+      background-color: #000088;
+      color: white;
+      font-family: monospace;
+      font-size: 18px;
+      text-shadow: 1px 1px 0 #000;
+      padding: 50px;
+    }
+
+    #survey-box {
+      border: 4px solid white;
+      padding: 20px;
+      width: 600px;
+      margin: auto;
+      background-color: black;
+      min-height: 200px;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      font-size: 18px;
+      font-family: monospace;
+      padding: 8px;
+      margin-top: 10px;
+      background-color: #000022;
+      color: white;
+      border: 2px solid white;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-family: monospace;
+      font-size: 18px;
+      background-color: #000055;
+      color: white;
+      border: 2px solid white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #000077;
+    }
+
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="survey-box">
+    <!-- Questions will appear here -->
+  </div>
+
+  <!-- Hidden form to submit to Formspree -->
+  <form id="survey-form" action="https://formspree.io/f/mgvnylya" method="POST" style="display: none;">
+    <input type="hidden" name="name" id="form-name">
+    <input type="hidden" name="favorite_color" id="form-color">
+    <input type="hidden" name="blood_type" id="form-blood">
+    <input type="hidden" name="_redirect" value="thankyou.html">
+  </form>
+
+  <script>
+    const questions = [
+      {
+        id: 'name',
+        text: 'WHAT IS YOUR NAME?',
+        type: 'text',
+        placeholder: 'ENTER NAME'
+      },
+      {
+        id: 'favorite_color',
+        text: 'WHAT IS YOUR FAVORITE COLOR?',
+        type: 'text',
+        placeholder: 'E.G. BLUE'
+      },
+      {
+        id: 'blood_type',
+        text: 'WHAT IS YOUR BLOOD TYPE?',
+        type: 'select',
+        options: ['A', 'B', 'AB', 'O']
+      }
+    ];
+
+    const answers = {};
+    let current = 0;
+
+    function showQuestion(index) {
+      const q = questions[index];
+      const box = document.getElementById('survey-box');
+      let html = `<p>${q.text}</p>`;
+
+      if (q.type === 'text') {
+        html += `<input type="text" id="answer-input" placeholder="${q.placeholder}" autofocus><br>`;
+      } else if (q.type === 'select') {
+        html += `<select id="answer-input">`;
+        q.options.forEach(opt => {
+          html += `<option value="${opt}">${opt}</option>`;
+        });
+        html += `</select><br>`;
+      }
+
+      html += `<div class="center"><button onclick="next()">CONFIRM</button></div>`;
+      box.innerHTML = html;
+
+      setTimeout(() => {
+        document.getElementById('answer-input').focus();
+      }, 50);
+    }
+
+    function next() {
+      const q = questions[current];
+      const value = document.getElementById('answer-input').value.trim();
+      answers[q.id] = value;
+
+      current++;
+      if (current < questions.length) {
+        showQuestion(current);
+      } else {
+        submitForm();
+      }
+    }
+
+    function submitForm() {
+      // Populate hidden form fields
+      document.getElementById('form-name').value = answers['name'];
+      document.getElementById('form-color').value = answers['favorite_color'];
+      document.getElementById('form-blood').value = answers['blood_type'];
+
+      // Show submission message
+      document.getElementById('survey-box').innerHTML = `
+        <p class="center">THANK YOU<br>FOR YOUR TIME.</p>
+        <p class="center">SUBMITTING RESPONSES...</p>
+      `;
+
+      // Submit form
+      document.getElementById('survey-form').submit();
+    }
+
+    window.onload = () => {
+      showQuestion(0);
+    };
+  </script>
+
+</body>
+</html>
