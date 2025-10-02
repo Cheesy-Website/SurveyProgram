@@ -16,20 +16,8 @@
     overflow: hidden;
   }
 
-  /* Intro text */
-  #intro {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    font-family: "utfont", monospace;
-    font-size: 32px;
-    white-space: pre-line;
-  }
-
-  /* Background video */
-  #bg-video {
+  /* Startup video */
+  #startup-video, #bg-video {
     position: fixed;
     top: 0;
     left: 0;
@@ -37,6 +25,9 @@
     height: 100%;
     object-fit: cover;
     z-index: -1;
+  }
+
+  #bg-video {
     display: none;
   }
 
@@ -95,8 +86,11 @@
 </head>
 <body>
 
-  <!-- Intro text -->
-  <div id="intro"></div>
+  <!-- Startup video -->
+  <video id="startup-video">
+    <source src="startup.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 
   <!-- Background video -->
   <video id="bg-video" loop>
@@ -113,7 +107,7 @@
     <input type="hidden" name="discord" id="form-discord">
     <input type="hidden" name="favorite_color" id="form-color">
     <input type="hidden" name="favourite_shows" id="form-shows">
-    <input type="hidden" name="favourite_food" id="form-food">
+    <input type="hidden" name="favorite_food" id="form-food">
     <input type="hidden" name="favourite_games" id="form-games">
     <input type="hidden" name="favourite_animals" id="form-animal">
     <input type="hidden" name="other" id="form-other">
@@ -121,13 +115,6 @@
   </form>
 
 <script>
-const introLines = [
-  "SURVEY_PROGRAM.EXE",
-  "ARE WE… CONNECTED?"
-];
-
-const introAudio = new Audio("audio.mp3");
-
 const questions = [
   { id: 'name', text: 'WHAT IS YOUR NAME?', type: 'text', placeholder: 'ENTER NAME' },
   { id: 'discord', text: 'DO YOU HAVE DISCORD? IF SO, WHAT IS YOUR USERNAME?', type: 'text', placeholder: 'ENTER USERNAME' },
@@ -155,33 +142,6 @@ function typeText(element, text, speed = 50, callback) {
     }
   }
   typeChar();
-}
-
-// Run intro sequence
-function runIntro(index = 0) {
-  if (index >= introLines.length) {
-    startSurvey();
-    return;
-  }
-  const introDiv = document.getElementById("intro");
-  typeText(introDiv, introLines[index], 60, () => {
-    setTimeout(() => runIntro(index + 1), 500); // pause between lines
-  });
-}
-
-function startSurvey() {
-  document.getElementById("intro").style.display = "none";
-
-  const video = document.getElementById("bg-video");
-  video.style.display = "block";
-  video.play();
-
-  const surveyBox = document.getElementById("survey-box");
-  surveyBox.style.display = "block";
-  setTimeout(() => {
-    surveyBox.classList.add("show");
-    showQuestion(current);
-  }, 50);
 }
 
 function showQuestion(index) {
@@ -230,12 +190,24 @@ function submitForm() {
   });
 }
 
-// Start everything
+// When startup video ends, fade in survey
+document.getElementById("startup-video").addEventListener("ended", () => {
+  const video = document.getElementById("bg-video");
+  video.style.display = "block";
+  video.play();
+
+  const surveyBox = document.getElementById("survey-box");
+  surveyBox.style.display = "block";
+  setTimeout(() => {
+    surveyBox.classList.add("show");
+    showQuestion(current);
+  }, 50);
+});
+
+// Start the startup video
 window.onload = () => {
-  introAudio.play();
-  runIntro();
+  document.getElementById("startup-video").play();
 };
 </script>
-
 </body>
 </html>
