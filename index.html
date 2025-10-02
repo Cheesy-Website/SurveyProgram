@@ -14,9 +14,26 @@
     text-shadow: 1px 1px 0 #000;
     height: 100vh;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* Startup video */
+  #start-button {
+    font-family: "utfont", monospace;
+    font-size: 32px;
+    color: white;
+    background: none;
+    border: 2px solid white;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
+  #start-button:hover {
+    color: yellow;
+    border-color: yellow;
+  }
+
   #startup-video, #bg-video {
     position: fixed;
     top: 0;
@@ -27,11 +44,10 @@
     z-index: -1;
   }
 
-  #bg-video {
+  #startup-video, #bg-video {
     display: none;
   }
 
-  /* Survey box */
   #survey-box {
     border: 4px solid white;
     padding: 20px;
@@ -86,6 +102,9 @@
 </head>
 <body>
 
+  <!-- START BUTTON -->
+  <button id="start-button">▶ START SURVEY</button>
+
   <!-- Startup video -->
   <video id="startup-video">
     <source src="startup.mp4" type="video/mp4">
@@ -108,7 +127,7 @@
     <input type="hidden" name="favorite_color" id="form-color">
     <input type="hidden" name="favourite_shows" id="form-shows">
     <input type="hidden" name="favorite_food" id="form-food">
-    <input type="hidden" name="favourite_games" id="form-games">
+    <input type="hidden" name="favorite_games" id="form-games">
     <input type="hidden" name="favourite_animals" id="form-animal">
     <input type="hidden" name="other" id="form-other">
     <input type="hidden" name="_redirect" value="thankyou.html">
@@ -190,24 +209,28 @@ function submitForm() {
   });
 }
 
-// When startup video ends, fade in survey
-document.getElementById("startup-video").addEventListener("ended", () => {
-  const video = document.getElementById("bg-video");
-  video.style.display = "block";
-  video.play();
+// START BUTTON CLICK
+document.getElementById("start-button").addEventListener("click", () => {
+  document.getElementById("start-button").style.display = "none";
 
-  const surveyBox = document.getElementById("survey-box");
-  surveyBox.style.display = "block";
-  setTimeout(() => {
-    surveyBox.classList.add("show");
-    showQuestion(current);
-  }, 50);
+  const startup = document.getElementById("startup-video");
+  startup.style.display = "block";
+  startup.play();
+
+  // When startup video ends, show survey and background
+  startup.addEventListener("ended", () => {
+    const bg = document.getElementById("bg-video");
+    bg.style.display = "block";
+    bg.play();
+
+    const surveyBox = document.getElementById("survey-box");
+    surveyBox.style.display = "block";
+    setTimeout(() => {
+      surveyBox.classList.add("show");
+      showQuestion(current);
+    }, 50);
+  });
 });
-
-// Start the startup video
-window.onload = () => {
-  document.getElementById("startup-video").play();
-};
 </script>
 </body>
 </html>
