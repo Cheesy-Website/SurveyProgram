@@ -60,7 +60,14 @@
       margin-top: 80px;
       background-color: black;
       min-height: 200px;
-      display: none; /* hidden until start */
+      opacity: 0;           /* start hidden */
+      display: none;        /* hidden until start */
+      transition: opacity 1.5s ease; /* fade-in effect */
+    }
+
+    #survey-box.show {
+      display: block;
+      opacity: 1;           /* fade in */
     }
 
     input[type="text"], select {
@@ -200,9 +207,14 @@
       video.play();
 
       document.getElementById("start-screen").style.display = "none";
-      document.getElementById("survey-box").style.display = "block";
+      let surveyBox = document.getElementById("survey-box");
+      surveyBox.style.display = "block";
 
-      showQuestion(0);
+      // trigger fade-in
+      setTimeout(() => {
+        surveyBox.classList.add("show");
+        showQuestion(0);
+      }, 50);
     });
   </script>
 </body>
